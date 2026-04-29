@@ -4,10 +4,7 @@ version = "1.0.0"
 description = "FinTracker User Profile Service — manages user identity, preferences, and real-time WebSocket connections."
 authors = ["FinTracker Team"]
 readme = "README.md"
-packages = [{ include = "domain", from = "src" },
-            { include = "infrastructure", from = "src" },
-            { include = "app", from = "src" },
-            { include = "config", from = "src" }]
+packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.12"

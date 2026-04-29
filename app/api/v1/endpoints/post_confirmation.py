@@ -13,7 +13,7 @@ import logging
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from config.container import service
+from app.core.container import service
 
 logger = Logger(service="user-profile-service")
 

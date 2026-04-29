@@ -18,8 +18,8 @@ from uuid import UUID
 
 import boto3
 
-from config.container import _ws_repo
-from domain.models import WebSocketConnection
+from app.core.container import _ws_repo
+from app.schemas.models import WebSocketConnection
 
 logger = Logger(service="user-profile-service")
 

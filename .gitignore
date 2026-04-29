@@ -1,0 +1,41 @@
+# --- Python Basics ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.python-version
+
+# --- Poetry & Environments ---
+# We ignore the venv because Poetry manages it, but we KEEP poetry.lock
+.venv/
+env/
+venv/
+ENV/
+
+# --- Build & Distribution ---
+dist/
+build/
+*.egg-info/
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.cache/
+htmlcov/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*,cover
+
+# --- IDEs & Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- System & Env ---
+.DS_Store
+Thumbs.db
+.env
+.env.*
+!.env.example

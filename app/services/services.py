@@ -9,14 +9,14 @@ from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
 
-from domain.models import (
+from app.schemas.models import (
     NotificationPreferences,
     SavingsGoal,
     SubscriptionTier,
     UserProfile,
     UserSettings,
 )
-from domain.ports import EventPublisher, GoalRepository, UserRepository
+from typing import Any # Using Any for now to avoid circular imports or just direct dependence
 
 log = logging.getLogger(__name__)
 
@@ -39,9 +39,9 @@ class UserProfileService:
 
     def __init__(
         self,
-        user_repo: UserRepository,
-        goal_repo: GoalRepository,
-        event_publisher: EventPublisher,
+        user_repo: Any,
+        goal_repo: Any,
+        event_publisher: Any,
     ) -> None:
         self._user_repo = user_repo
         self._goal_repo = goal_repo

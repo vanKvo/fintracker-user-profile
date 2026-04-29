@@ -14,14 +14,14 @@ import boto3
 from botocore.exceptions import ClientError
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from domain.ports import EventPublisher
+
 
 log = logging.getLogger(__name__)
 
 EVENT_BUS_SOURCE = "fintracker.user-profile-service"
 
 
-class EventBridgePublisher(EventPublisher):
+class EventBridgePublisher:
     """Outbound Adapter: publishes integration events to AWS EventBridge."""
 
     def __init__(self, event_bus_name: str) -> None:

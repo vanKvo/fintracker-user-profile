@@ -21,7 +21,7 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from domain.models import (
+from app.schemas.models import (
     NotificationChannel,
     NotificationPreferences,
     SavingsGoal,
@@ -30,14 +30,14 @@ from domain.models import (
     UserSettings,
     WebSocketConnection,
 )
-from domain.ports import GoalRepository, UserRepository, WebSocketRepository
+
 
 log = logging.getLogger(__name__)
 
 _TABLE_ENV = "DYNAMODB_TABLE_NAME"
 
 
-class DynamoDBUserRepository(UserRepository):
+class DynamoDBUserRepository:
     """Outbound Adapter: DynamoDB implementation of UserRepository."""
 
     def __init__(self, table_name: str) -> None:
@@ -186,7 +186,7 @@ class DynamoDBUserRepository(UserRepository):
         log.info("Deleted %d DynamoDB records for user_id=%s", len(items), user_id)
 
 
-class DynamoDBGoalRepository(GoalRepository):
+class DynamoDBGoalRepository:
     """Outbound Adapter: DynamoDB implementation of GoalRepository."""
 
     def __init__(self, table_name: str) -> None:
@@ -227,7 +227,7 @@ class DynamoDBGoalRepository(GoalRepository):
         )
 
 
-class DynamoDBWebSocketRepository(WebSocketRepository):
+class DynamoDBWebSocketRepository:
     """Outbound Adapter: DynamoDB implementation of WebSocketRepository."""
 
     def __init__(self, table_name: str) -> None:

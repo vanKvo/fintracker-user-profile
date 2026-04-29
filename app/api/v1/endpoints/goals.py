@@ -14,8 +14,8 @@ from uuid import UUID
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.utilities.typing import LambdaContext
 
-from config.container import service
-from domain.services import UserNotFoundError
+from app.core.container import service
+from app.services.services import UserNotFoundError
 
 logger = Logger(service="user-profile-service")
 
