@@ -1,3 +1,9 @@
+---
+service: fintracker-user-profile
+status: refactored
+last_updated: 2026-04-29
+---
+
 # User Profile Service
 
 The User Profile Service manages user identity, preferences, savings goals, and real-time WebSocket connections. Built as a pure Serverless Python application, it leverages a Layered Architecture, AWS API Gateway, AWS Lambda, DynamoDB, and AWS Cognito.
@@ -12,23 +18,49 @@ The User Profile Service manages user identity, preferences, savings goals, and 
 
 This service strictly adheres to a Python Layered Architecture, decoupling API handlers, business logic, and database access.
 
+```mermaid
+graph LR
+    subgraph API_Gateway
+        A[REST Endpoints]
+        B[WebSocket]
+    end
+    subgraph User_Profile_Service
+        C[Lambda Handlers]
+        D[UserProfileService]
+        E[DynamoDB Repository]
+        F[EventBridge Publisher]
+    end
+    subgraph Infrastructure
+        G[(DynamoDB)]
+        H[EventBridge]
+        I[Cognito]
+    end
+
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> H
+    I -- Post-Confirmation --> C
+```
+
+**Project Structure:**
 ```text
 app/
 ├── api/             # API Layer (REST and WebSocket Lambda handlers)
-│   └── v1/
-│       └── endpoints/
 ├── core/            # Global configuration & Dependency Injection container
 ├── crud/            # Data Access Layer (DynamoDB Repositories)
 ├── schemas/         # Pydantic models & Data Transfer Objects
 └── services/        # Core Business Logic & EventBridge Publishers
 ```
-*(Diagrams and global architecture details can be found in `/docs/fintracker-architectural-doc.md`)*
 
 ## Tech Stack
 Frontend:	Angular (via fintracker-ui)
 Backend:	Python (Lambda Handlers)
 Cloud:		AWS (Lambda, DynamoDB, Cognito, EventBridge, API Gateway)
-DevOps:		Poetry, pytest
+DevOps:		Poetry, GitHub Actions
 
 ## Modules & Interfaces
 
@@ -44,14 +76,21 @@ DevOps:		Poetry, pytest
 **Event-Driven / Serverless Triggers**
 | Event Source | Trigger/Pattern | Description |
 |---|---|---|
-| AWS Cognito | Post-Confirmation | Fires after email confirmation or initial OAuth login to initialize the user's DynamoDB profile. |
-| API Gateway | WebSocket `$connect` | Authorizes the user and stores their WebSocket connection ID and endpoint. |
+| AWS Cognito | Post-Confirmation | Fires after email confirmation to initialize the user's DynamoDB profile. |
+| API Gateway | WebSocket `$connect` | Authorizes the user and stores their WebSocket connection ID. |
 | API Gateway | WebSocket `$disconnect` | Cleans up the disconnected WebSocket session from DynamoDB. |
+
+## Environment Variables
+| Variable | Description |
+|---|---|
+| `DYNAMODB_TABLE_NAME` | Name of the DynamoDB table (Single Table Design) |
+| `EVENT_BUS_NAME` | AWS EventBridge bus name for integration events |
+| `POWERTOOLS_SERVICE_NAME` | Service name for logging/tracing |
 
 ## Core Workflows
 
-* **Identity Mapping Initialization:** Upon Cognito's Post-Confirmation trigger, the service atomically writes an `IDENTITY` mapping alongside `PROFILE` and `SETTINGS` rows in DynamoDB. This transaction uses conditional expressions to ensure idempotency.
-* **Account Offboarding:** Account deletion requests trigger a BatchWrite to erase all DynamoDB rows associated with the user. The service then emits a `UserAccountDeleted` event to EventBridge, allowing downstream systems like the Ledger Service to asynchronously purge financial records.
+* **Identity Mapping Initialization:** Upon Cognito's Post-Confirmation trigger, the service atomically writes an `IDENTITY` mapping alongside `PROFILE` and `SETTINGS` rows in DynamoDB.
+* **Account Offboarding:** Account deletion requests trigger a BatchWrite to erase all DynamoDB rows associated with the user and emit a `UserAccountDeleted` event to EventBridge.
 
 ## Quick Start
 <details>
@@ -60,27 +99,23 @@ DevOps:		Poetry, pytest
 ### Prerequisites
 * Python 3.12+
 * Poetry
-* AWS CLI
+* Docker & Docker Compose (for local DynamoDB)
 
 ### Installation
-1.  **Clone the repository:**
+1.  **Clone the repository & navigate to the service:**
     ```bash
-    git clone https://github.com/vanKvo/fintracker.git
-    cd fintracker/services/fintracker-user-profile
+    git clone https://github.com/vanKvo/fintracker-user-profile.git
+    cd fintracker-user-profile
     ```
 2.  **Configure Environment:**
-    Ensure the following environment variables are set for local testing:
-    ```bash
-    export DYNAMODB_TABLE_NAME="FinTracker_UserProfile"
-    export EVENT_BUS_NAME="fintracker-custom-bus"
-    ```
+    Create a `.env` file with the required DynamoDB and EventBridge configurations.
 3.  **Install Dependencies:**
     ```bash
     poetry install
     ```
 4.  **Run Tests:**
     ```bash
-    poetry run pytest tests/
+    poetry run pytest
     ```
 
 </details>
