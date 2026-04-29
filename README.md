@@ -1,9 +1,3 @@
----
-service: fintracker-user-profile
-status: refactored
-last_updated: 2026-04-29
----
-
 # User Profile Service
 
 The User Profile Service manages user identity, preferences, savings goals, and real-time WebSocket connections. Built as a pure Serverless Python application, it leverages a Layered Architecture, AWS API Gateway, AWS Lambda, DynamoDB, and AWS Cognito.
