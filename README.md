@@ -51,10 +51,11 @@ app/
 ```
 
 ## Tech Stack
-Frontend:	Angular (via fintracker-ui)
-Backend:	Python (Lambda Handlers)
-Cloud:		AWS (Lambda, DynamoDB, Cognito, EventBridge, API Gateway)
-DevOps:		Poetry, GitHub Actions
+* **Frontend:** Angular (via fintracker-ui)
+* **Backend:** Python (Lambda Handlers), DynamoDB
+* **Cloud:** AWS (Lambda, API Gateway, EventBridge, Cognito)
+* **DevOps:** Poetry, GitHub Actions
+* **Testing:** pytest
 
 ## Modules & Interfaces
 
